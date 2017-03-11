@@ -1,0 +1,12 @@
+# Jetbrains IDE Files
+.idea/
+*.iml
+
+# Build Files
+build/
+dist/
+*.bin
+
+# Core dumps
+core
+!/core

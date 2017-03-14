@@ -24,4 +24,4 @@ SET(CMAKE_CXX_FLAGS ${CXXFLAGS})
 include_directories("/usr/lib/avr/include")
 include_directories("../lufa/LUFA")
 
-add_executable(avr-timing main.c)
+add_executable(avr-timing main.c leds.cpp leds.h)

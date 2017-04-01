@@ -1,6 +1,7 @@
 # Jetbrains IDE Files
 .idea/
 *.iml
+cmake-build*/
 
 # Build Files
 build/

@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <ncurses.h>
+#include <cstring>
 
 const char *hostname = "localhost";
 int port = 12345;
@@ -15,8 +16,8 @@ void updateClkPll(double freq, double offset);
 void updateLat(double lat, double acc_m);
 void updateLon(double lon, double acc_m);
 void updateAlt(double alt, double acc_m);
-
-void updateConnection(int l, const char *msg);
+void updateConnection(int color, const char *msg);
+void logEvent(int color, const char *message);
 
 int main(int argc, char **argv) {
     if(argc > 1) hostname = argv[1];
@@ -37,7 +38,6 @@ int main(int argc, char **argv) {
     init_pair(5, COLOR_WHITE, COLOR_GREEN);
     init_pair(6, COLOR_WHITE, COLOR_YELLOW);
     init_pair(7, COLOR_WHITE, COLOR_RED);
-    init_pair(8, COLOR_BLACK, COLOR_WHITE);
 
     attron(COLOR_PAIR(1));
 
@@ -63,6 +63,7 @@ int main(int argc, char **argv) {
 
     // Create Events Widget
     winEvents = newwin(rows - 21, 80, 20, 0);
+    scrollok(winEvents, true);
 
     wrefresh(winStatus);
     wrefresh(winWeather);
@@ -74,7 +75,13 @@ int main(int argc, char **argv) {
     updateAlt(0, 0);
     wrefresh(winStatus);
 
-    updateConnection(0, "OK");
+    logEvent(1, "test 1");
+    logEvent(2, "test 2");
+    logEvent(3, "test 3");
+    logEvent(4, "test 4");
+
+    updateConnection(2, "SLOW");
+    wrefresh(winEvents);
 
     for(;;) {
         int c = getch();
@@ -139,4 +146,14 @@ void updateConnection(int l, const char *msg) {
     mvprintw(rows - 1, 0, "  Backend:% 31s% 36s  ", host, msg);
     attroff(A_BOLD);
     attroff(COLOR_PAIR(5+l));
+}
+
+void logEvent(int color, const char *message) {
+    char buffer[81];
+    wscrl(winEvents, -1);
+    strncpy(buffer, message, 80);
+    buffer[80] = 0;
+    wattron(winEvents, COLOR_PAIR(color));
+    mvwprintw(winEvents, 0, 0, "%s", buffer);
+    wattroff(winEvents, COLOR_PAIR(color));
 }
